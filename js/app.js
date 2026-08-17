@@ -88,12 +88,14 @@ function renderBlockList() {
     if (block.subject) subParts.push(escapeHtml(block.subject));
 
     row.innerHTML = `
-      <div class="row-main">
-        <p class="row-title">${escapeHtml(block.title)}</p>
-        <p class="row-sub">${subParts.join(" · ") || "?"}</p>
-      </div>
-      <div class="row-right">
-        <span class="lock-icon">🔒</span>
+      <div class="row-head">
+        <div class="row-main">
+          <p class="row-title">${escapeHtml(block.title)}</p>
+          <p class="row-sub">${subParts.join(" · ") || "?"}</p>
+        </div>
+        <div class="row-right">
+          <span class="lock-icon">🔒</span>
+        </div>
       </div>
     `;
 
@@ -202,13 +204,15 @@ function renderSectionList() {
     const done = isSectionCompleted(state.activeBlock.id, i);
 
     row.innerHTML = `
-      <div class="row-main">
-        <p class="row-title">${escapeHtml(section.title)}</p>
-        <p class="row-sub">${(section.cards || []).length} карток</p>
-      </div>
-      <div class="row-right">
-        ${done ? '<span class="badge-chip badge-success">✓ Вивчено</span>' : ""}
-        <span class="lock-icon unlocked">▶</span>
+      <div class="row-head">
+        <div class="row-main">
+          <p class="row-title">${escapeHtml(section.title)}</p>
+          <p class="row-sub">${(section.cards || []).length} карток</p>
+        </div>
+        <div class="row-right">
+          ${done ? '<span class="badge-chip badge-success">✓ Вивчено</span>' : ""}
+          <span class="lock-icon unlocked">▶</span>
+        </div>
       </div>
     `;
 
@@ -257,12 +261,78 @@ function exitStudy() {
   renderSectionList();
 }
 
+const flipCardEl = document.getElementById("flipCard");
+const stampKnowEl = document.getElementById("stampKnow");
+const stampForgetEl = document.getElementById("stampForget");
+
+const SWIPE_THRESHOLD = 90;
+let dragActive = false;
+let dragStartX = 0;
+let dragDeltaX = 0;
+let dragSuppressClick = false;
+
+function updateSwipeStamps(dx) {
+  const progress = Math.min(Math.abs(dx) / SWIPE_THRESHOLD, 1);
+  stampKnowEl.style.opacity = dx > 0 ? progress : 0;
+  stampForgetEl.style.opacity = dx < 0 ? progress : 0;
+}
+
+function resetCardTransform() {
+  flipCardEl.style.transform = "";
+  flipCardEl.style.opacity = "";
+  updateSwipeStamps(0);
+}
+
+function onCardPointerDown(e) {
+  if (!state.flipped) return;
+  dragActive = true;
+  dragStartX = e.clientX;
+  dragDeltaX = 0;
+  dragSuppressClick = false;
+  flipCardEl.style.transition = "none";
+  flipCardEl.setPointerCapture(e.pointerId);
+}
+
+function onCardPointerMove(e) {
+  if (!dragActive) return;
+  dragDeltaX = e.clientX - dragStartX;
+  if (Math.abs(dragDeltaX) > 8) dragSuppressClick = true;
+  flipCardEl.style.transform = `translateX(${dragDeltaX}px) rotate(${dragDeltaX / 18}deg)`;
+  updateSwipeStamps(dragDeltaX);
+}
+
+function onCardPointerUp() {
+  if (!dragActive) return;
+  dragActive = false;
+  flipCardEl.style.transition = "";
+
+  if (Math.abs(dragDeltaX) > SWIPE_THRESHOLD) {
+    const knew = dragDeltaX > 0;
+    const flyX = knew ? window.innerWidth : -window.innerWidth;
+    flipCardEl.style.transition = "transform 0.35s ease-out, opacity 0.35s ease-out";
+    flipCardEl.style.transform = `translateX(${flyX}px) rotate(${knew ? 30 : -30}deg)`;
+    flipCardEl.style.opacity = "0";
+    setTimeout(() => {
+      flipCardEl.style.transition = "none";
+      resetCardTransform();
+      rateCard(knew);
+    }, 300);
+  } else {
+    resetCardTransform();
+  }
+}
+
+flipCardEl.addEventListener("pointerdown", onCardPointerDown);
+flipCardEl.addEventListener("pointermove", onCardPointerMove);
+flipCardEl.addEventListener("pointerup", onCardPointerUp);
+flipCardEl.addEventListener("pointercancel", onCardPointerUp);
+
 function renderCard() {
   document.getElementById("studyProgress").textContent = `У черзі: ${state.queue.length}`;
 
   const card = state.cards[state.queue[0]];
 
-  const flipCardEl = document.getElementById("flipCard");
+  resetCardTransform();
   flipCardEl.classList.toggle("is-flipped", state.flipped);
   ratingControlsEl.style.display = state.flipped ? "flex" : "none";
   studyHintEl.style.display = state.flipped ? "none" : "block";
@@ -289,7 +359,7 @@ function renderCard() {
 
 function flipCard() {
   state.flipped = !state.flipped;
-  document.getElementById("flipCard").classList.toggle("is-flipped", state.flipped);
+  flipCardEl.classList.toggle("is-flipped", state.flipped);
   ratingControlsEl.style.display = state.flipped ? "flex" : "none";
   studyHintEl.style.display = state.flipped ? "none" : "block";
 }
@@ -337,7 +407,13 @@ function finishStudy() {
   }
 }
 
-document.getElementById("flipCard").addEventListener("click", flipCard);
+flipCardEl.addEventListener("click", () => {
+  if (dragSuppressClick) {
+    dragSuppressClick = false;
+    return;
+  }
+  flipCard();
+});
 document.getElementById("btnKnow").addEventListener("click", () => rateCard(true));
 document.getElementById("btnDontKnow").addEventListener("click", () => rateCard(false));
 document.getElementById("btnRestartSession").addEventListener("click", () => startStudy(state.activeSectionIndex));

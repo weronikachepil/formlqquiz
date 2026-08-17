@@ -38,6 +38,14 @@ body {
   color: var(--text);
   background: linear-gradient(135deg, var(--bg-grad-a) 0%, var(--bg-grad-b) 100%);
   min-height: 100vh;
+  overflow-x: hidden;
+}
+
+.katex-display {
+  overflow-x: auto;
+  overflow-y: hidden;
+  max-width: 100%;
+  padding: 4px 0;
 }
 
 .page {
@@ -98,10 +106,7 @@ body {
   padding: 14px 22px;
   box-shadow: var(--shadow-pill);
   display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  justify-content: space-between;
-  gap: 8px 16px;
+  flex-direction: column;
   cursor: pointer;
   border: 2px solid transparent;
   transition: border-color 0.15s ease, transform 0.15s ease;
@@ -109,6 +114,14 @@ body {
 
 .pill-row.is-open {
   border-radius: var(--radius-md);
+}
+
+.row-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  width: 100%;
 }
 
 .pill-row:hover {
@@ -182,6 +195,18 @@ body {
   display: flex;
   gap: 10px;
   flex-wrap: wrap;
+  animation: unlock-form-in 0.18s ease-out;
+}
+
+@keyframes unlock-form-in {
+  from {
+    opacity: 0;
+    transform: translateY(-6px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 .unlock-form input[type="password"],
@@ -192,7 +217,7 @@ body {
   border-radius: var(--radius-pill);
   border: 2px solid var(--accent-soft);
   font-family: inherit;
-  font-size: 14px;
+  font-size: 16px;
   outline: none;
   background: var(--surface);
 }
@@ -300,11 +325,43 @@ body {
 }
 
 .flip-card {
+  position: relative;
   width: 100%;
   max-width: 560px;
   min-height: 300px;
   perspective: 1600px;
   cursor: pointer;
+  touch-action: pan-y;
+}
+
+.swipe-stamp {
+  position: absolute;
+  top: 24px;
+  padding: 8px 18px;
+  border: 3px solid;
+  border-radius: 10px;
+  font-weight: 800;
+  font-size: 20px;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  opacity: 0;
+  pointer-events: none;
+  z-index: 5;
+  background: var(--surface);
+}
+
+.swipe-stamp.stamp-know {
+  left: 20px;
+  color: var(--success);
+  border-color: var(--success);
+  transform: rotate(-12deg);
+}
+
+.swipe-stamp.stamp-forget {
+  right: 20px;
+  color: var(--danger);
+  border-color: var(--danger);
+  transform: rotate(12deg);
 }
 
 .flip-card-inner {
@@ -577,7 +634,7 @@ body {
 .field input,
 .field textarea {
   font-family: inherit;
-  font-size: 14px;
+  font-size: 16px;
   padding: 12px 16px;
   border-radius: var(--radius-md);
   border: 2px solid var(--accent-soft);
