@@ -328,7 +328,7 @@ flipCardEl.addEventListener("pointerup", onCardPointerUp);
 flipCardEl.addEventListener("pointercancel", onCardPointerUp);
 
 function renderCard() {
-  document.getElementById("studyProgress").textContent = `У черзі: ${state.queue.length}`;
+  document.getElementById("studyProgress").textContent = `Свайпнуто: ${state.stats.reviews} · У черзі: ${state.queue.length}`;
 
   const card = state.cards[state.queue[0]];
 
