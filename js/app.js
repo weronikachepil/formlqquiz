@@ -18,7 +18,6 @@ function renderMath(el) {
   }
 }
 
-const MASTER_THRESHOLD = 2;
 const COMPLETED_KEY = "formlq_completed_sections";
 
 const state = {
@@ -28,7 +27,6 @@ const state = {
   activeSectionIndex: null,
   cards: [],
   queue: [],
-  knownStreak: {},
   stats: { reviews: 0, mistakes: 0 },
   flipped: false,
 };
@@ -241,7 +239,6 @@ function startStudy(sectionIndex) {
   state.activeSectionIndex = sectionIndex;
   state.cards = section.cards || [];
   state.queue = shuffle(state.cards.map((_, i) => i));
-  state.knownStreak = {};
   state.stats = { reviews: 0, mistakes: 0 };
   state.flipped = false;
 
@@ -367,17 +364,10 @@ function flipCard() {
 function rateCard(knewIt) {
   const cardIdx = state.queue[0];
   state.stats.reviews++;
-
-  if (knewIt) {
-    state.knownStreak[cardIdx] = (state.knownStreak[cardIdx] || 0) + 1;
-  } else {
-    state.knownStreak[cardIdx] = 0;
-    state.stats.mistakes++;
-  }
-
   state.queue.shift();
 
-  if (state.knownStreak[cardIdx] < MASTER_THRESHOLD) {
+  if (!knewIt) {
+    state.stats.mistakes++;
     const insertAt = Math.min(3, state.queue.length);
     state.queue.splice(insertAt, 0, cardIdx);
   }
