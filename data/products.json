@@ -1,0 +1,43 @@
+[
+  {
+    "id": "algebra-nmt",
+    "title": "Алгебра - практичний збірник",
+    "description": "Практичний збірник для підготовки до НМТ з алгебри: тестові завдання, завдання на відповідність, завдання з відкритою відповіддю.",
+    "price": 350,
+    "currency": "UAH",
+    "status": "available",
+    "cover": "algebra",
+    "formats": ["pdf", "print"]
+  },
+  {
+    "id": "algebra-flashcards",
+    "title": "Алгебра - квіз-картки",
+    "description": "Інтерактивні флеш-картки для швидкого повторення алгебри: питання з формулами й графіками та система інтервального повторення.",
+    "price": 150,
+    "currency": "UAH",
+    "status": "available",
+    "cover": "flashcards",
+    "formats": [],
+    "studyUrl": "/study"
+  },
+  {
+    "id": "geometry-nmt",
+    "title": "Геометрія - практичний збірник",
+    "description": "Практичний збірник для підготовки до НМТ з геометрії. Скоро у продажу.",
+    "price": null,
+    "currency": "UAH",
+    "status": "soon",
+    "cover": "soon",
+    "formats": ["pdf", "print"]
+  },
+  {
+    "id": "formlq-workbook",
+    "title": "Formlq Workbook",
+    "description": "Універсальний робочий зошит formlq. Скоро у продажу.",
+    "price": null,
+    "currency": "UAH",
+    "status": "soon",
+    "cover": "soon",
+    "formats": ["pdf", "print"]
+  }
+]

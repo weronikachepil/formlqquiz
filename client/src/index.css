@@ -1,0 +1,305 @@
+@import url("https://fonts.googleapis.com/css2?family=Manrope:wght@500;600;700;800&family=Dancing+Script:wght@600;700&display=swap");
+@import "tailwindcss";
+
+@theme {
+  --color-accent: #4f46e5;
+  --color-accent-dark: #4338ca;
+  --color-accent-soft: #e0e0fb;
+  --color-surface: #ffffff;
+  --color-surface-soft: #f3f0fb;
+  --color-ink: #1b1830;
+  --color-ink-muted: #74708a;
+  --color-success: #22c55e;
+  --color-success-soft: #e4f9ec;
+  --color-danger: #ef4444;
+  --color-danger-soft: #fde8e8;
+
+  --font-sans: "Manrope", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  --font-script: "Dancing Script", cursive;
+
+  --radius-lg: 28px;
+  --radius-md: 18px;
+
+  --shadow-card: 0 10px 30px rgba(90, 70, 170, 0.08);
+  --shadow-pill: 0 4px 14px rgba(90, 70, 170, 0.1);
+  --shadow-card-hover: 0 16px 36px rgba(90, 70, 170, 0.16);
+
+  --animate-float-back: floatBack 6s ease-in-out infinite;
+  --animate-float-front: floatFront 7s ease-in-out infinite;
+}
+
+@keyframes floatBack {
+  0%,
+  100% {
+    transform: rotate(-9deg) translate(-46px, 6px);
+  }
+  50% {
+    transform: rotate(-9deg) translate(-46px, -8px);
+  }
+}
+
+@keyframes floatFront {
+  0%,
+  100% {
+    transform: rotate(7deg) translate(38px, -10px);
+  }
+  50% {
+    transform: rotate(7deg) translate(38px, -24px);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .animate-float-back,
+  .animate-float-front {
+    animation: none;
+  }
+}
+
+@keyframes introOverlayIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes introOverlayOut {
+  from {
+    opacity: 1;
+  }
+  to {
+    opacity: 0;
+  }
+}
+
+@keyframes introWrite {
+  from {
+    clip-path: inset(0 100% 0 0);
+  }
+  to {
+    clip-path: inset(0 0% 0 0);
+  }
+}
+
+.intro-overlay {
+  animation: introOverlayIn 0.5s ease-out both;
+}
+
+.intro-overlay-closing {
+  animation: introOverlayOut 0.6s ease-in both;
+}
+
+.intro-text-wrap {
+  animation: introWrite 1.3s 0.3s cubic-bezier(0.65, 0, 0.35, 1) both;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .intro-overlay,
+  .intro-overlay-closing,
+  .intro-text-wrap {
+    animation-duration: 0.01ms !important;
+    animation-delay: 0s !important;
+  }
+}
+
+@keyframes introBirdFly {
+  0% {
+    opacity: 0;
+    transform: translate(-50%, -50%) translate(-42vw, 26vh) rotate(-10deg) scale(0.45);
+  }
+  15% {
+    opacity: 1;
+  }
+  50% {
+    transform: translate(-50%, -50%) translate(-4vw, -14vh) rotate(4deg) scale(0.85);
+  }
+  85% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+    transform: translate(-50%, -50%) translate(44vw, -32vh) rotate(12deg) scale(0.55);
+  }
+}
+
+.intro-bird {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 64px;
+  height: 64px;
+  background-color: var(--color-accent-dark);
+  -webkit-mask-repeat: no-repeat;
+  mask-repeat: no-repeat;
+  -webkit-mask-size: contain;
+  mask-size: contain;
+  -webkit-mask-position: center;
+  mask-position: center;
+  animation: introBirdFly 2.6s ease-in-out both;
+  pointer-events: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .intro-bird {
+    animation: none;
+    opacity: 0;
+  }
+}
+
+@keyframes modalBackdropIn {
+  from {
+    opacity: 0;
+    backdrop-filter: blur(0px);
+  }
+  to {
+    opacity: 1;
+    backdrop-filter: blur(12px);
+  }
+}
+
+@keyframes modalCardIn {
+  from {
+    opacity: 0;
+    transform: translateY(16px) scale(0.96);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+.modal-backdrop-in {
+  animation: modalBackdropIn 0.35s ease-out both;
+}
+
+.modal-card-in {
+  animation: modalCardIn 0.4s 0.05s cubic-bezier(0.2, 0.8, 0.2, 1) both;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .modal-backdrop-in,
+  .modal-card-in {
+    animation-duration: 0.01ms !important;
+    animation-delay: 0s !important;
+  }
+}
+
+html,
+body,
+#root {
+  min-height: 100%;
+}
+
+body {
+  margin: 0;
+  font-family: var(--font-sans);
+  color: var(--color-ink);
+  background: linear-gradient(135deg, #f7f6fb 0%, #ded6f9 100%);
+  min-height: 100vh;
+  overflow-x: hidden;
+}
+
+.katex-display {
+  overflow-x: auto;
+  overflow-y: hidden;
+  max-width: 100%;
+  padding: 4px 0;
+}
+
+.reveal {
+  opacity: 0;
+  transform: translateY(24px);
+  transition:
+    opacity 0.6s ease,
+    transform 0.6s ease;
+}
+
+.reveal.is-visible {
+  opacity: 1;
+  transform: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .reveal {
+    transition: none;
+  }
+}
+
+@layer components {
+  .btn {
+    @apply inline-flex items-center justify-center text-center font-bold text-sm rounded-full px-[22px] py-3 cursor-pointer bg-accent text-white shadow-pill transition-all duration-150 no-underline border-none;
+  }
+  .btn:hover {
+    @apply bg-accent-dark -translate-y-0.5;
+    box-shadow: 0 10px 22px rgba(67, 56, 202, 0.28);
+  }
+  .btn:active {
+    @apply scale-[0.97] shadow-pill;
+  }
+  .btn:disabled {
+    @apply opacity-60 cursor-not-allowed pointer-events-none;
+  }
+  .btn-ghost {
+    @apply bg-surface text-ink border-2 border-accent-soft shadow-none;
+  }
+  .btn-ghost:hover {
+    @apply border-accent bg-surface text-ink;
+  }
+  .btn-lg {
+    @apply px-[30px] py-4 text-[15px];
+  }
+  .btn-block {
+    @apply w-full;
+  }
+
+  .btn-google {
+    @apply flex items-center justify-center gap-2.5 bg-accent-soft text-ink rounded-full px-[22px] py-3 font-bold text-sm no-underline cursor-pointer border-none;
+  }
+  .btn-google:hover {
+    filter: brightness(0.97);
+  }
+
+  .plain-link {
+    @apply relative text-accent-dark font-bold no-underline;
+  }
+  .plain-link::after {
+    content: "";
+    right: 100%;
+    @apply absolute left-0 -bottom-0.5 h-0.5 bg-accent-dark transition-all duration-200;
+  }
+  .plain-link:hover::after {
+    right: 0;
+  }
+
+  .card {
+    @apply bg-surface rounded-lg shadow-card;
+  }
+
+  .field {
+    @apply flex flex-col gap-1.5;
+  }
+  .field label {
+    @apply text-sm font-bold text-ink-muted;
+  }
+  .field input,
+  .field textarea {
+    @apply w-full font-sans text-base px-4 py-3 rounded-md border-2 border-accent-soft bg-surface outline-none;
+  }
+  .field input:focus,
+  .field textarea:focus {
+    @apply border-accent;
+  }
+
+  .badge-chip {
+    @apply bg-accent-soft text-ink text-xs font-semibold px-3.5 py-1.5 rounded-full whitespace-nowrap;
+  }
+
+  .error-text {
+    @apply text-danger text-sm font-semibold;
+  }
+
+  .empty-state {
+    @apply text-center py-10 px-5 text-ink-muted text-sm;
+  }
+}

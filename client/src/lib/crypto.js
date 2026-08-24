@@ -14,13 +14,7 @@ function base64ToBytes(base64) {
 }
 
 async function deriveKey(password, saltBytes, usages) {
-  const keyMaterial = await crypto.subtle.importKey(
-    "raw",
-    new TextEncoder().encode(password),
-    "PBKDF2",
-    false,
-    ["deriveKey"]
-  );
+  const keyMaterial = await crypto.subtle.importKey("raw", new TextEncoder().encode(password), "PBKDF2", false, ["deriveKey"]);
   return crypto.subtle.deriveKey(
     { name: "PBKDF2", salt: saltBytes, iterations: PBKDF2_ITERATIONS, hash: "SHA-256" },
     keyMaterial,
@@ -30,7 +24,7 @@ async function deriveKey(password, saltBytes, usages) {
   );
 }
 
-async function encryptJSON(password, data) {
+export async function encryptJSON(password, data) {
   const salt = crypto.getRandomValues(new Uint8Array(16));
   const iv = crypto.getRandomValues(new Uint8Array(12));
   const key = await deriveKey(password, salt, ["encrypt"]);
@@ -43,7 +37,7 @@ async function encryptJSON(password, data) {
   };
 }
 
-async function decryptJSON(password, { salt, iv, ciphertext }) {
+export async function decryptJSON(password, { salt, iv, ciphertext }) {
   const saltBytes = base64ToBytes(salt);
   const ivBytes = base64ToBytes(iv);
   const cipherBytes = base64ToBytes(ciphertext);

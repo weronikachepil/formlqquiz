@@ -1,0 +1,12 @@
+node_modules/
+.env
+.DS_Store
+dist/
+data/decks.json
+data/orders.json
+data/users.json
+data/invites.json
+data/access-grants.json
+data/share-links.json
+data/product-files/*
+!data/product-files/.gitkeep
